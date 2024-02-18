@@ -1,0 +1,184 @@
+﻿@page
+@using UNOEngine
+@model Index
+
+@{
+    string? name;
+
+    if (Model.GetPlayer() != null)
+    {
+        name = Model.GetPlayer()!.Name;
+    }
+    else
+    {
+        name = null;
+    }
+    
+    var activePlayer = Model.Engine.GetActivePlayer(Model.State);
+    var lastPlayedCard = Model.Engine.GetLastPlayedCard(Model.State);
+    var playerDeck = new List<GameCard>();
+    if (Model.State.TmpDeck == null)
+    {        
+        playerDeck = Model.State.PlayerDecks[activePlayer.Name];
+    }
+    else
+    {
+        playerDeck = Model.State.TmpDeck;
+    }
+    
+    var playableCards = Model.Engine.GetPlayableCards(playerDeck, Model.State, activePlayer);
+    
+    if (Model.State.CanStackCards && Model.State.TmpDeck != null)
+    {
+        ViewData["Title"] = "Choose stackable cards";
+        <h1>Choose stackable cards</h1>
+    }
+    else if (name == null)
+    {
+        ViewData["Title"] = "Spectate Game";
+        <h1>Spectate</h1>
+    }
+    else
+    {
+        ViewData["Title"] = "Choose your Play";
+        <h1>Choose your play</h1>
+    }
+}
+
+
+<div style="display: flex; justify-content: flex-start; align-items: flex-start; margin-top: 30px;">
+    <div style="margin-right: 20px;">
+        <h5>
+            Player: @name
+        </h5>
+        <h5>
+            Turn: @Model.State.Round
+        </h5>
+        @* <h5> *@
+        @*     @foreach (var card in Model.State.PlayedCards) *@
+        @*     { *@
+        @*         @card *@
+        @*     } *@
+        @* </h5> *@
+        <h5>
+            Players:
+        </h5>
+
+        @Html.Raw(Model.Engine.GetPlayerStackSizeString(Model.State, true))
+    </div>
+    <div style="position: fixed; top: 75px; right: 650px; display: flex; flex-direction: column; align-items: center;">
+        <h3>LAST PLAYED CARD:</h3>
+        <div class="@lastPlayedCard.GetCss()">
+            <span class="inner">
+                <span>@lastPlayedCard.GetValue()</span>
+            </span>
+        </div>
+    </div>
+</div>
+
+
+@if (activePlayer.Id.Equals(Model.PlayerId))
+{
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+
+    if (Model.State.TmpDeck != null)
+    {
+        <h3>
+            Cards that are stackable:
+        </h3>
+    }
+    else
+    {
+        <h3>
+            YOUR DECK (UNPLAYABLE CARDS ARE GRAYED OUT):
+        </h3>
+    }
+
+    <form method="post" action="@Url.Page("../Pages/Play/Index", new { Model.GameId, Model.PlayerId })" id="cardForm">
+        @foreach (var card in playerDeck)
+        {
+            <div class="card-container">
+                @if (playableCards.Contains(card) || Model.State.TmpDeck != null)
+                {
+                    <button type="submit" name="Card" value="@card.GetIntSuite(),@card.GetIntValue()">
+                        <div class="@card.GetCss()">
+                            <span class="inner">
+                                <span>@card.GetValue()</span>
+                            </span>
+                        </div>
+                    </button>
+                }
+                else
+                {
+                    <div class="unplayable">
+                        <div class="@card.GetCss()">
+                            <span class="inner">
+                                <span>@card.GetValue()</span>
+                            </span>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        <div style="position: fixed; top: 150px; right: 450px;">
+            <div style="margin-bottom: 10px;">
+                <button type="submit" name="Action" value="TAKE">TAKE</button>
+            </div>
+        </div>
+    </form>
+}
+@if (Model.State.TmpDeck == null && name != null)
+{
+    <form method="post" action="@Url.Page("../Pages/Play/Index", new { Model.GameId, Model.PlayerId })" id="unoForm">
+        <div style="position: fixed; top: 190px; right: 450px;">
+            <div>
+                <button type="submit" name="Action" value="UNO">UNO</button>
+            </div>
+        </div>
+    </form>
+}
+else if (name != null && activePlayer.Id.Equals(Model.PlayerId))
+{
+    <form method="post" action="@Url.Page("../Pages/Play/Index", new { Model.GameId, Model.PlayerId })" id="unoForm">
+        <div style="position: fixed; top: 150px; right: 450px;">
+            <div>
+                <button type="submit" name="Action" value="PLAYALL">Play all</button>
+            </div>
+        </div>
+        <div style="position: fixed; top: 110px; right: 450px;">
+            <div>
+                <button type="submit" name="Action" value="CONTINUE">Continue</button>
+            </div>
+        </div>
+    </form>
+}
+
+@if (activePlayer.Id != Model.PlayerId)
+{
+    <h5 style="position: fixed; top: 15px; right: 20px;" >Reload page in <span  id="reload-label">-</span></h5>
+}
+
+@section Scripts
+{
+
+    <script>
+        let playedCards = [];
+        let timerValue = 2;
+        let timerLabel = document.querySelector("#reload-label");
+
+        setInterval(() => {
+            timerValue--;
+            timerLabel.innerHTML = timerValue.toString();
+            if (timerValue<=0) {
+                window.location.reload();
+            }
+        }, 1000);
+        
+    </script>
+}
+

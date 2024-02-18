@@ -1,0 +1,78 @@
+@page
+@model CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Game</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <br/>
+            <h4>Basic Rules</h4>
+            <div class="form-group">
+                <label asp-for="@Model.HandSize" class="control-label"></label>
+                <input asp-for="@Model.HandSize" class="form-control" type="number" />
+                <span asp-validation-for="@Model.HandSize" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.SkipAfterDraw" class="control-label"></label>
+                <input asp-for="@Model.SkipAfterDraw" class="form-check-input" type="checkbox" />
+                <span asp-validation-for="@Model.SkipAfterDraw" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="@Model.CanStackCards" class="control-label"></label>
+                <input asp-for="@Model.CanStackCards" class="form-check-input" type="checkbox" />
+                <span asp-validation-for="@Model.CanStackCards" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="@Model.CanPlayDrawWithoutRestrictions" class="control-label"></label>
+                <input asp-for="@Model.CanPlayDrawWithoutRestrictions" class="form-check-input" type="checkbox" />
+                <span asp-validation-for="@Model.CanPlayDrawWithoutRestrictions" class="text-danger"></span>
+            </div>
+            
+            <br/>
+            <h4>Player settings</h4>
+            
+            <div class="form-group">
+                <label asp-for="@Model.PlayersTotal" class="control-label"></label>
+                <input asp-for="@Model.PlayersTotal" class="form-control" type="number" />
+                <span asp-validation-for="@Model.PlayersTotal" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.PlayerTypesHuman" class="control-label"></label>
+                <input asp-for="@Model.PlayerTypesHuman" class="form-control" type="number" />
+                <span asp-validation-for="@Model.PlayerTypesHuman" class="text-danger"></span>
+            </div>
+            
+            <br/>
+            <h4>Number of cards in play of each suite</h4>
+            @foreach (var key in Model.AmountOfCardValue.Keys)
+            {
+                <div class="form-group">
+                    <label asp-for="@key" class="control-label">@key.ToString()</label>
+                    <input asp-for="@Model.AmountOfCardValue[key]" class="form-control" type="number" />
+                    <span asp-validation-for="@key" class="text-danger"></span>
+                </div>
+            }
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

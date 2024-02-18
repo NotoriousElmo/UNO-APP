@@ -1,0 +1,67 @@
+@page
+@using Domain
+@model IndexModel
+
+@{
+    ViewData["Title"] = "UNO";
+    var count = 0;
+}
+
+<h1>UNO</h1>
+
+<p>
+    <a asp-page="Create">Start new game</a>
+</p>
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Game[0].CreatedTime)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.Game[0].UpdatedTime)
+        </th>
+        <th>
+            Continue as:
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Game) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdatedTime)
+            </td>
+            <td>
+            @item.Players!.Count -
+            @foreach (var player in item.Players)
+            {
+                if (player.PlayerType == EPlayerType.Human)
+                {
+                    var playerLabel = player.Name;
+                    <a asp-page="/Play/Index" asp-route-gameId="@item.Id" asp-route-playerId="@player.Id">@playerLabel</a>
+                    count++;
+                }
+                else
+                {
+                    var playerLabel = player.Name;
+                    <a>@playerLabel</a>
+                }
+            }
+            @if (count == 0)
+            {
+                <a asp-page="/Play/Index" asp-route-gameId="@item.Id" asp-route-playerId="Spectate">Spectate</a>
+            }
+            </td>
+        <td>
+            <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+        </td>
+    </tr>
+}
+    </tbody>
+</table>

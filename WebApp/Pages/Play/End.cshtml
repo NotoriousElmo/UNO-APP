@@ -1,0 +1,26 @@
+﻿@page
+@model WebApp.Pages.Play.End
+
+@{
+    ViewData["Title"] = "UNO";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Finish screen</title>
+</head>
+<body>
+    <div>
+        <h1> @Model.Player Won!</h1>
+        <form method="post" action="@Url.Page("..Pages/Play/End")">
+            <div>
+                <div>
+                    <button type="submit" name="Continue" value="Continue">Continue</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+﻿@page
+@model WebApp.Pages.Games.Names
+
+@{
+    ViewData["Title"] = "Change names";
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <title>Change names for players</title>
+</head>
+    <body>
+    <h2>Change Player Names</h2>
+        
+    <br/>
+        <form method="post">
+            @for (var i = 0; i < Model.SettablePlayers.Count; i++)
+            {
+                <div>
+                    <label for="SettablePlayers[@i].Name">Player @(i + 1) Name:</label>
+                    <input type="text" asp-for="SettablePlayers[i].Name" />
+                </div>
+            }
+                
+            <br/>
+            <button type="submit">Save Changes</button>
+        </form>
+    </body>
+</html>

@@ -1,0 +1,35 @@
+﻿@page
+@model WebApp.Pages.Play.ChangeColor
+
+@{
+    ViewData["Title"] = "UNO";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Change color</title>
+    <style>
+        .color-button {
+            width: 50px;
+            height: 50px;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<h5 style="position: center">Pick your color:</h5>
+<div>
+    <form method="post" style="position: center">
+        <button class="color-button" style="background-color: red;" name="selectedColor" value="red">Red</button>
+        <button class="color-button" style="background-color: green;" name="selectedColor" value="green">Green</button>
+        <button class="color-button" style="background-color: yellow;" name="selectedColor" value="yellow">Yellow</button>
+        <button class="color-button" style="background-color: blue;" name="selectedColor" value="blue">Blue</button>
+
+        <input type="submit" style="display: none;"/>
+    </form>
+</div>
+</body>
+</html>
